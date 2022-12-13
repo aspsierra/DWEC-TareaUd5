@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Validador Expresiones regulares</title>
+
+    <style>
+        #setdescri {
+            display: none;
+        }
+    </style>
+
+    <script type="text/javascript">
+
+    </script>
+</head>
+
+<body>
+    <h3>Expresiones regulares</h3>
+    <form id="miform" action="" method="post">
+        <fieldset>
+            <input id="catalogo" type="button" value="RegExp">
+            <input type="text" id="regular" name="regular" placeholder="Mi expresión regular" size="45">
+            <br>
+            <br>
+            <label>Cadena</label>
+            <textarea id="dattest" placeholder="Cadena test" cols="45" rows="5"></textarea>
+            <br>
+            <br>
+            <label>Resultado</label>
+            <textarea id="result" placeholder="Resultado" cols="45" rows="5"></textarea>
+            <br>
+        </fieldset>
+        <br>
+        <fieldset id="setdescri">
+            <label>Descripción</label>
+            <textarea id="descri" name="descri" placeholder="Introduce una descripción" cols="45" rows="5"></textarea>
+            <br>
+        </fieldset>
+        <br>
+        <input id="ejecutar" type="button" value="Exec">
+        <input id="test" type="button" value="Test">
+        <input id="match" type="button" value="Match">
+        <input id="replace" type="button" value="Replace">
+        <input id="search" type="button" value="Search">
+        <input id="split" type="button" value="Split">
+        <input id="grabar" type="button" value="Grabar">
+        <input type="reset" value="Borrar">
+    </form>
+    <center>
+        <p><input id="help" type="button" value="Ayuda"></p>
+    </center>
+</body>
+<footer>
+    <script src="./main.js"></script>
+</footer>
+
+</html>

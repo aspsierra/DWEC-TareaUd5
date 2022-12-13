@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Referencia rápida-RegExp</title>
+</head>
+
+<body>
+    <h3>Expresiones regulares</h3>
+    <center><b>
+            <p id="help">Referencia rápida</p>
+        </b></center>
+
+    <table style="display:inline-block;vertical-align:top;margin-left:10px;text-align:left">
+        <tbody>
+            <tr>
+                <td>[abx-z]</td>
+                <td>Un carácter de: a, b, o el rango x-z</td>
+            </tr>
+            <tr>
+                <td>[^abx-z]</td>
+                <td>Un carácter excepto: a, b, o el rango x-z</td>
+            </tr>
+            <tr>
+                <td>a|b</td>
+                <td>a o b</td>
+            </tr>
+            <tr>
+                <td>a?</td>
+                <td>Cero o uno a (codicioso)</td>
+            </tr>
+            <tr>
+                <td>a??</td>
+                <td>Cero o uno a (perezoso)</td>
+            </tr>
+            <tr>
+                <td>a*</td>
+                <td>Cero o más a's (codicioso)</td>
+            </tr>
+            <tr>
+                <td>a*?</td>
+                <td>Cero o más a's (perezoso)</td>
+            </tr>
+            <tr>
+                <td>a+</td>
+                <td>Uno o más a's (codiciosos)</td>
+            </tr>
+            <tr>
+                <td>a+?</td>
+                <td>Uno o más a's (perezoso)</td>
+            </tr>
+            <tr>
+                <td>a{4}</td>
+                <td>Exactamente 4 a</td>
+            </tr>
+            <tr>
+                <td>a{4,8}</td>
+                <td>Entre (inclusive) 4 y 8 a's</td>
+            </tr>
+            <tr>
+                <td>a{9,}</td>
+                <td>9 o más a's</td>
+            </tr>
+            <tr>
+                <td>(?&gt;...)</td>
+                <td>An atomic group</td>
+            </tr>
+            <tr>
+                <td>(?=...)</td>
+                <td>Una anticipación positiva</td>
+            </tr>
+            <tr>
+                <td>(?!...)</td>
+                <td>Una mirada negativa hacia adelante</td>
+            </tr>
+            <tr>
+                <td>(?&lt;=...)</td>
+                <td>Una mirada positiva detrás</td>
+            </tr>
+            <tr>
+                <td>(?&lt;!...)</td>
+                <td>Una mirada negativa detrás</td>
+            </tr>
+            <tr>
+                <td>(?:...)</td>
+                <td>Un grupo que no captura</td>
+            </tr>
+            <tr>
+                <td>(...)</td>
+                <td>Un grupo de captura</td>
+            </tr>
+            <tr>
+                <td>(?P&lt;n&gt;...)</td>
+                <td>Un grupo de captura llamado n</td>
+            </tr>
+        </tbody>
+    </table>
+    <table style="display:inline-block;vertical-align:top;margin-left:10px;text-align:left;">
+        <tbody>
+            <tr>
+                <td>^</td>
+                <td>Comienzo del string</td>
+            </tr>
+            <tr>
+                <td>$</td>
+                <td>Fin de la cadena</td>
+            </tr>
+            <tr>
+                <td>\d</td>
+                <td>Un dígito (igual que [0-9])</td>
+            </tr>
+            <tr>
+                <td>\D</td>
+                <td>Un no dígito (igual que [^ 0-9])</td>
+            </tr>
+            <tr>
+                <td>\w</td>
+                <td>Un carácter de palabra (igual que [_a-zA-Z0-9])</td>
+            </tr>
+            <tr>
+                <td>\W</td>
+                <td>Un carácter no verbal (igual que [^ _a-zA-Z0-9])</td>
+            </tr>
+            <tr>
+                <td>\s</td>
+                <td>Un carácter de espacio en blanco</td>
+            </tr>
+            <tr>
+                <td>\S</td>
+                <td>Un carácter que no es un espacio en blanco</td>
+            </tr>
+            <tr>
+                <td>\b</td>
+                <td>Un límite de palabra</td>
+            </tr>
+            <tr>
+                <td>\B</td>
+                <td>Sin límite de palabra</td>
+            </tr>
+            <tr>
+                <td>\n</td>
+                <td>Una nueva línea</td>
+            </tr>
+            <tr>
+                <td>\t</td>
+                <td>Un tabulador</td>
+            </tr>
+            <tr>
+                <td>\cY</td>
+                <td>El carácter de control con el código hexadecimal Y</td>
+            </tr>
+            <tr>
+                <td>\xYY</td>
+                <td>El carácter de control con el código hexadecimal YY</td>
+            </tr>
+            <tr>
+                <td>\uYYYY</td>
+                <td>El carácter de control con el código hexadecimal YYYY</td>
+            </tr>
+            <tr>
+                <td>.</td>
+                <td>Cualquier carácter</td>
+            </tr>
+            <tr>
+                <td>\Y</td>
+                <td>El Y'th grupo capturado</td>
+            </tr>
+            <tr>
+                <td>(?1)</td>
+                <td>Recurrir al grupo numerado 1</td>
+            </tr>
+            <tr>
+                <td>(?&amp;x)</td>
+                <td>Recurrir al grupo con nombre x</td>
+            </tr>
+            <tr>
+                <td>(?P=n)</td>
+                <td>El grupo capturado llamado 'n'</td>
+            </tr>
+            <tr>
+                <td>(?#...)</td>
+                <td>Un comentario</td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+
+</html>
