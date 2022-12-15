@@ -4,6 +4,7 @@
  * @param {string} operacion - operación, Add o Borrar
  */
 function cambioSelect(data, operacion) {
+    
     switch (operacion) {
         case "add":
             var option = document.createElement("option");
@@ -14,6 +15,7 @@ function cambioSelect(data, operacion) {
             break;
 
         case "borrar":
+            document.getElementById("catalogo")
             document.getElementById("catalogo").removeChild(document.getElementById(data));
             break;
     }
@@ -30,13 +32,12 @@ function cambioSelect(data, operacion) {
 function buscaPos(data, expresion) {
     var pos = false;
     for (let i = 0; i < data.length; i++) {
-        if (data[i] == expresion) {
+        if (data[i][0] == expresion) {
             pos = i;
         }
     }
     return pos;
 }
-
 
 /**
  * Gestión de eventos
@@ -60,6 +61,16 @@ function eventos(arrExpresiones) {
      * @type {HTMLSelectElement}
      */
     var select = document.getElementById("catalogo");
+    /**
+     * @type {HTMLFieldSetElement}
+     */
+    var campoDescr = document.getElementById("setdescri");
+    /**
+     * @type {HTMLTextAreaElement}
+     */
+    var descr = document.getElementById("descri")
+
+    var cuentaGrabar = 0;
 
     var exp = null;
 
@@ -73,6 +84,8 @@ function eventos(arrExpresiones) {
 
             case "ejecutar":
 
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
 
                 if (cadena.value != "" && regular.value != "") {
                     var tabla = ""
@@ -95,11 +108,12 @@ function eventos(arrExpresiones) {
                 } else {
                     alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
                 }
-
                 break;
 
             case "test":
 
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
 
                 if (cadena.value != "" && regular.value != "") {
                     exp = new RegExp(regular.value, "g");
@@ -108,11 +122,12 @@ function eventos(arrExpresiones) {
                 } else {
                     alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
                 }
-
                 break;
 
             case "match":
-
+                
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
 
                 if (cadena.value != "" && regular.value != "") {
                     exp = new RegExp(regular.value, "g");
@@ -124,6 +139,9 @@ function eventos(arrExpresiones) {
 
             case "replace":
 
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
+
                 if (cadena.value != "" && regular.value != "") {
                     exp = new RegExp(regular.value, "g");
                     var cambio = prompt("Cadena de reemplazo");
@@ -131,10 +149,12 @@ function eventos(arrExpresiones) {
                 } else {
                     alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
                 }
-
                 break;
 
             case "search":
+
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
 
                 if (cadena.value != "" && regular.value != "") {
                     exp = new RegExp(regular.value, "g");
@@ -147,6 +167,9 @@ function eventos(arrExpresiones) {
 
             case "split":
 
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
+
                 if (cadena.value != "" && regular.value != "") {
                     exp = new RegExp(regular.value, "g");
                     resultado.value = cadena.value.split(exp);
@@ -156,17 +179,39 @@ function eventos(arrExpresiones) {
                 break;
 
             case "grabar":
+                switch (cuentaGrabar) {
+                    case 0:
 
-                if (buscaPos(arrExpresiones, regular.value) === false) {
-                    arrExpresiones.push(regular.value);
-                    localStorage.setItem("regExp", JSON.stringify(arrExpresiones));
-                    cambioSelect(regular.value, "add");
-                } else {
-                    alert("Esa expresión ya está registrada");
-                }
+                        alert("Introduce una expresión regular, una descripción y "
+                        + "opcionalmente una cadena de test descripción")
+                        campoDescr.style.display="block";
+                        cuentaGrabar++;
+                        break;
+
+                    case 1:
+                        if (buscaPos(arrExpresiones, regular.value) === false) {
+                            if(descr.value!=""){
+                                arrExpresiones.push([regular.value, cadena.value, descr.value]);
+                                localStorage.setItem("regExp", JSON.stringify(arrExpresiones));
+                                cambioSelect(arrExpresiones[arrExpresiones.length - 1][0], "add", arrExpresiones.length - 1);
+                                campoDescr.style.display="none";
+                                cuentaGrabar=0;
+                            } else{
+                                alert("La descripción no puede ir vacía");
+                            }                          
+                        } else {
+                            alert("Esa expresión ya está registrada");
+                        }                       
+                        break;
+                
+                    default:
+                        break;
+                }       
                 break;
 
             case "borrar":
+                campoDescr.style.display="none";
+                cuentaGrabar=0;
 
                 var pos = buscaPos(arrExpresiones, regular.value)
                 if (typeof (pos) == "number") {
@@ -179,8 +224,15 @@ function eventos(arrExpresiones) {
         }
     });
     select.addEventListener("change", evt => {
+
+        campoDescr.style.display = "none";
+        cuentaGrabar = 0;
+
+        var posicion = buscaPos(arrExpresiones, evt.target.value)
         expresion = evt.target.value;
-        regular.value = evt.target.value;
+        regular.value = arrExpresiones[posicion][0];
+        cadena.value = arrExpresiones[posicion][1];
+        descr.value = arrExpresiones[posicion][2];
 
     })
 }
@@ -206,7 +258,7 @@ function main() {
     var arExp = preload();
     if (arExp.length > 0) {
         for (let i = 0; i < arExp.length; i++) {
-            cambioSelect(arExp[i], "add");
+            cambioSelect(arExp[i][0], "add", i);
         }
     }
     eventos(arExp);
