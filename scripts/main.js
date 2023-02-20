@@ -1,25 +1,67 @@
 /**
+ * Array de espresiones guardadas
+ */
+var arrExpresiones = []
+/**
+ * Numero de veces que se pulsó el botón de guardar
+ */
+var cuentaGrabar = 0;
+/**
+ * Contador del numero de coincidencias encontradas
+ */
+var contador = 0;
+
+/**
+ * Carga de localStorage si existe e inicialización del formulario
+ */
+function main() {
+    if (localStorage.getItem("regExp")) {
+        console.log(localStorage.getItem("regExp"));
+        arrExpresiones = JSON.parse(localStorage.getItem("regExp"));
+    } else {
+        //Expresión de prueba
+        arrExpresiones.push(['/([A-Z])\\w+/g', 'Cadena de Prueba\n\nEscogemos cualquier palabra que empiece con una letra Mayuscula', 'Expresión regular de prueba']);
+    }
+    for (let i = 0; i < arrExpresiones.length; i++) {
+        cambioSelect(arrExpresiones[i][0], "add", i);
+    }
+    if (arrExpresiones.length > 1) {
+        iniciarForm(1);
+    } else {
+        iniciarForm(0);
+    }
+}
+
+/**
+ * Iniciar el formulario en la posición del array especificada
+ * @param {Number} posicion - Posición en la que iniciar el formulario
+ */
+function iniciarForm(posicion) {
+    catalogo.selectedIndex = posicion;
+    regular.value = arrExpresiones[posicion][0];
+    dattest.value = arrExpresiones[posicion][1];
+    descri.value = arrExpresiones[posicion][2];
+}
+
+/**
  * Cambio las opciones del select en funcion de la operacion elegida
  * @param {string} data - Valor a introducir en el select
  * @param {string} operacion - operación, Add o Borrar
  */
 function cambioSelect(data, operacion) {
-    
     switch (operacion) {
         case "add":
             var option = document.createElement("option");
             option.id = data;
             option.value = data;
             option.text = data;
-            document.getElementById("catalogo").appendChild(option);
+            catalogo.appendChild(option);
+            catalogo.selectedIndex = catalogo.children.length - 1
             break;
-
         case "borrar":
-            document.getElementById("catalogo")
-            document.getElementById("catalogo").removeChild(document.getElementById(data));
+            catalogo.removeChild(document.getElementById(data));
             break;
     }
-
 }
 
 /**
@@ -39,229 +81,125 @@ function buscaPos(data, expresion) {
     return pos;
 }
 
-/**
- * Gestión de eventos
- * @param {array} arrExpresiones - array de expresiones introducidas por el usuario
- */
-function eventos(arrExpresiones) {
 
-    /**
-     * @type {HTMLTextAreaElement} 
-     */
-    var cadena = document.getElementById("dattest");
-    /**
-     * @type {HTMLInputElement}
-     */
-    var regular = document.getElementById("regular");
-    /**
-     * @type {HTMLTextAreaElement} 
-     */
-    var resultado = document.getElementById("result");
-    /**
-     * @type {HTMLSelectElement}
-     */
-    var select = document.getElementById("catalogo");
-    /**
-     * @type {HTMLFieldSetElement}
-     */
-    var campoDescr = document.getElementById("setdescri");
-    /**
-     * @type {HTMLTextAreaElement}
-     */
-    var descr = document.getElementById("descri")
+ejecutar.addEventListener('click', function () {
+    result.value = '';
+    if (dattest.value != "" && regular.value != "") {
+        exp = eval(regular.value);
+        contador = 0;
+        if (exp.test(dattest.value)) {
+            do {
+                contador++;
+                result.value += "Concidencia: " + contador + ", posición: " + exp.lastIndex + "\n";
 
-    var cuentaGrabar = 0;
-
-    var exp = null;
-
-    document.addEventListener("click", evt => {
-        console.log(evt)
-        switch (evt.target.id) {
-            case "help":
-
-                window.open("./ayuda_exp_reg.html", "", "width = 1000; height = 600");
-                break;
-
-            case "ejecutar":
-
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                if (cadena.value != "" && regular.value != "") {
-                    var tabla = ""
-                    exp = new RegExp(regular.value, "g");
-                    arResult = [];
-                    var contador = 0;
-                    while (exp.exec(cadena.value) != null) {
-                        contador++;
-                        arResult.push(JSON.stringify({ indice: contador, posicion: exp.lastIndex }));
-                    }
-                    console.log(arResult);
-
-                    for (let i = 0; i < arResult.length; i++) {
-                        var aux = JSON.parse(arResult[i]);
-
-                        tabla += "Concidencia: " + aux.indice + ", posición: " + aux.posicion + "\n";
-                    }
-
-                    resultado.value = tabla;
-                } else {
-                    alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
-                }
-                break;
-
-            case "test":
-
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                if (cadena.value != "" && regular.value != "") {
-                    exp = new RegExp(regular.value, "g");
-                    arResult = [];
-                    resultado.value = exp.test(cadena.value);
-                } else {
-                    alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
-                }
-                break;
-
-            case "match":
-                
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                if (cadena.value != "" && regular.value != "") {
-                    exp = new RegExp(regular.value, "g");
-                    resultado.value = cadena.value.match(exp);
-                } else {
-                    alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
-                }
-                break;
-
-            case "replace":
-
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                if (cadena.value != "" && regular.value != "") {
-                    exp = new RegExp(regular.value, "g");
-                    var cambio = prompt("Cadena de reemplazo");
-                    resultado.value = cadena.value.replace(exp, cambio);
-                } else {
-                    alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
-                }
-                break;
-
-            case "search":
-
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                if (cadena.value != "" && regular.value != "") {
-                    exp = new RegExp(regular.value, "g");
-                    resultado.value = cadena.value.search(exp);
-                } else {
-                    alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
-                }
-
-                break;
-
-            case "split":
-
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                if (cadena.value != "" && regular.value != "") {
-                    exp = new RegExp(regular.value, "g");
-                    resultado.value = cadena.value.split(exp);
-                } else {
-                    alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
-                }
-                break;
-
-            case "grabar":
-                switch (cuentaGrabar) {
-                    case 0:
-
-                        alert("Introduce una expresión regular, una descripción y "
-                        + "opcionalmente una cadena de test descripción")
-                        campoDescr.style.display="block";
-                        cuentaGrabar++;
-                        break;
-
-                    case 1:
-                        if (buscaPos(arrExpresiones, regular.value) === false) {
-                            if(descr.value!=""){
-                                arrExpresiones.push([regular.value, cadena.value, descr.value]);
-                                localStorage.setItem("regExp", JSON.stringify(arrExpresiones));
-                                cambioSelect(arrExpresiones[arrExpresiones.length - 1][0], "add", arrExpresiones.length - 1);
-                                campoDescr.style.display="none";
-                                cuentaGrabar=0;
-                            } else{
-                                alert("La descripción no puede ir vacía");
-                            }                          
-                        } else {
-                            alert("Esa expresión ya está registrada");
-                        }                       
-                        break;
-                
-                    default:
-                        break;
-                }       
-                break;
-
-            case "borrar":
-                campoDescr.style.display="none";
-                cuentaGrabar=0;
-
-                var pos = buscaPos(arrExpresiones, regular.value)
-                if (typeof (pos) == "number") {
-                    arrExpresiones.splice(pos, 1);
-                    localStorage.setItem("regExp", JSON.stringify(arrExpresiones));
-                    cambioSelect(regular.value, "borrar");
-                }
-                break;
-
+            } while (exp.exec(dattest.value) != null);
+        } else {
+            result.value = "No hay ninguna coincidencia";
         }
-    });
-    select.addEventListener("change", evt => {
 
-        campoDescr.style.display = "none";
-        cuentaGrabar = 0;
-
-        var posicion = buscaPos(arrExpresiones, evt.target.value)
-        expresion = evt.target.value;
-        regular.value = arrExpresiones[posicion][0];
-        cadena.value = arrExpresiones[posicion][1];
-        descr.value = arrExpresiones[posicion][2];
-
-    })
-}
-
-/**
- * Precarga de los datos guardados en localStorage
- * @returns Array
- */
-function preload() {
-    if (localStorage.getItem("regExp")) {
-        console.log(localStorage.getItem("regExp"));
-        var expresiones = JSON.parse(localStorage.getItem("regExp"));
-        return expresiones;
     } else {
-        return new Array();
+        alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
     }
-}
+});
+test.addEventListener('click', function () {
+    if (dattest.value != "" && regular.value != "") {
+        exp = eval(regular.value);
+        contador = 0;
+        if (exp.test(dattest.value)) {
+            do {
+                contador++;
+            } while (exp.exec(dattest.value) != null);       
+            result.value = "Coincidencias encontradas: " + contador;
+        } else {
+            result.value = "No se encontraron coincidencias";
+        }
+    } else {
+        alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
+    }
+});
+match.addEventListener('click', function () {
+    if (dattest.value != "" && regular.value != "") {
+        exp = eval(regular.value);
+        result.value = "Resultado de comparar la cadena con la expresión: \n"
+            + dattest.value.match(exp);
+    } else {
+        alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
+    }
+});
+replace.addEventListener('click', function () {
+    if (dattest.value != "" && regular.value != "") {
+        exp = eval(regular.value);
+        var cambio = prompt("Cadena de reemplazo");
+        if (cambio != null) {
+            result.value = "Reemplazar las coincidencias por '" + cambio + "':\n"
+                + dattest.value.replace(exp, cambio);
+        }
+    } else {
+        alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
+    }
+});
+split.addEventListener('click', function () {
+    if (dattest.value != "" && regular.value != "") {
+        exp = eval(regular.value);
+        result.value = "Separando la cadena usando la expresión regular:\n"
+            + dattest.value.split(exp);
+    } else {
+        alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
+    }
+});
+search.addEventListener('click', function () {
+    if (dattest.value != "" && regular.value != "") {
+        exp = eval(regular.value);
+        result.value = "Posición de la primera coincidencia: " + dattest.value.search(exp);
+    } else {
+        alert("Acuerdate de escribir una cadena de caracteres y de elegir una expresión ya guardada")
+    }
+});
+grabar.addEventListener('click', function () {
+    switch (cuentaGrabar) {
+        case 0:
+            alert("Introduce una expresión regular, una descripción y "
+                + "opcionalmente una cadena de test descripción")
+            setdescri.style.display = "block";
+            cuentaGrabar++;
+            break;
 
-/**
- * Funcion principal, gestion de la secuencia
- */
-function main() {
-    var arExp = preload();
-    if (arExp.length > 0) {
-        for (let i = 0; i < arExp.length; i++) {
-            cambioSelect(arExp[i][0], "add", i);
+        case 1:
+            if (buscaPos(arrExpresiones, regular.value) === false) {
+                if (descri.value != "") {
+                    arrExpresiones.push([regular.value, dattest.value, descri.value]);
+                    localStorage.setItem("regExp", JSON.stringify(arrExpresiones));
+                    cambioSelect(arrExpresiones[arrExpresiones.length - 1][0], "add");
+                    setdescri.style.display = "none";
+                    cuentaGrabar = 0;
+                } else {
+                    alert("La descripción no puede ir vacía");
+                }
+            } else {
+                alert("Esa expresión ya está registrada");
+            }
+            break;
+    }
+});
+borrar.addEventListener('click', function (evt) {
+    evt.preventDefault();
+    if (catalogo.selectedIndex == 0) {
+        alert("No se puede eliminar la expresión de prueba");
+    } else {
+        var pos = buscaPos(arrExpresiones, regular.value);
+        if (typeof (pos) == "number") {
+            iniciarForm(pos - 1);
+            cambioSelect(arrExpresiones[pos][0], "borrar");
+            arrExpresiones.splice(pos, 1);
+            localStorage.setItem("regExp", JSON.stringify(arrExpresiones));
         }
     }
-    eventos(arExp);
-}
+});
+help.addEventListener('click', function () {
+    window.open("./ayuda_exp_reg.html", "", "width = 1000; height = 600");
+});
+catalogo.addEventListener("change", function () {
+    iniciarForm(buscaPos(arrExpresiones, catalogo.value));
+})
 
 main();
